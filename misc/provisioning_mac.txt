@@ -1,0 +1,28 @@
+# Install Docker
+# https://www.docker.com/docker-mac
+
+# Setup anyenv
+# https://github.com/riywo/anyenv
+
+# Setup pyenv, pyenv-virtualenv
+anyenv install pyenv
+git clone https://github.com/yyuu/pyenv-virtualenv ~/.anyenv/envs/pyenv/plugins/pyenv-virtualenv
+
+# Install miniconda
+pyenv install miniconda3-4.3.27
+
+# Create wob environment
+pyenv virtualenv miniconda3-4.3.27 wob
+cd /path/to/wob
+pyenv local wob
+
+# Install packages
+pip install "gym[atari]"
+pip install universe
+pip install tensorflow==1.4.0
+pip install six
+pip install opencv-python
+
+# initial run (will download wob docker image)
+cd misc
+python starter.py

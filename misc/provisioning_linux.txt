@@ -1,0 +1,68 @@
+# download wob
+cd && git clone https://github.com/walkingmask/wob.git
+
+# setup report script
+cp ~/wob/misc/tool/report.sh /usr/local/bin/report
+chmod a+x /usr/local/bin/report
+vim /usr/local/bin/report # you need to write some information
+
+# shutdown script
+cp ~/wob/misc/tool/pre.sh /usr/local/bin/
+chmod a+x /usr/local/bin/pre.sh
+
+# running report
+cp ~/wob/misc/tool/report10.sh /usr/local/bin/
+chmod a+x /usr/local/bin/report10.sh
+(crontab -l; echo "*/10 * * * * /usr/local/bin/report10.sh") | crontab -
+
+# update
+sudo apt update -y && sudo apt upgrade -y
+
+# python
+sudo apt install -y gcc make libssl-dev libbz2-dev libreadline-dev libsqlite3-dev zlib1g-dev
+cd
+git clone https://github.com/pyenv/pyenv.git .pyenv
+cd .pyenv/plugins/
+git clone git://github.com/yyuu/pyenv-virtualenv.git
+rm -rf .pyenv/plugins/.git && rm -rf .pyenv/.git
+cd
+vim .bashrc # you need to write below
+<< COMMENT
+export PYENV_ROOT=$HOME/.pyenv
+export PATH=$PYENV_ROOT/bin:$PATH
+eval "$(pyenv init -)"
+eval "$(pyenv virtualenv-init -)"
+COMMENT
+. .bashrc
+pyenv install anaconda3-4.1.1
+pyenv global anaconda3-4.1.1
+
+# universe
+sudo apt-get install -y tmux htop cmake golang libjpeg-dev libxrender-dev
+pip install "gym[atari]"
+pip install universe
+sudo apt install -y libsm6 libxext6
+pip install tensorflow==1.4.0
+pip install six
+pip install opencv-python
+
+# docker
+sudo apt-get install apt-transport-https ca-certificates curl software-properties-common
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo apt-key add -
+sudo add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/ubuntu \
+   $(lsb_release -cs) \
+   stable"
+sudo apt-get update
+sudo apt-get -y install docker-ce
+sudo adduser $USER docker
+
+# cleanup
+sudo apt autoremove
+sudo apt clean
+
+# initial run (will download wob docker image)
+cd ~/wob/misc
+python starter.py
+
+# stop instance
+sudo shutdown -h now
