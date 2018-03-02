@@ -5,3 +5,4 @@
 from .v1 import FFPolicy
 from .no_gap import FFPolicy2
 from .v0 import FFPolicy0
+from .v2 import FFPolicy3

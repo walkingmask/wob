@@ -81,13 +81,10 @@ class Player(object):
             if self.step > self.max_steps:
                 break
 
-            fetched = self.network.act(state)
+            action = self.network.act_max(state).argmax()
+            print(action)
 
-            action = fetched[0]
-            action_ = action.argmax()
-            print(action_)
-
-            state, reward, terminal, info = env.step(action_)
+            state, reward, terminal, info = env.step(action)
 
             if self.img_flag:
                 states.append(state)
