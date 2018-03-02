@@ -61,7 +61,7 @@ class DataSet(object):
         X, Y = [], []
         for data in dataset:
             obs, act = data
-            X.append(obs)
+            X.append(obs * (1.0 / 255.0))
             Y.append(act[0])
         self.dataset = list(zip(X, Y))
 
