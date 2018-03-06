@@ -3,27 +3,6 @@ import numpy as np
 import tensorflow as tf
 
 
-# 方策ベースクラス
-class Policy(object):
-    def __init__(self, ob_space, ac_space):
-        self.x = tf.placeholder(tf.float32, [None] + list(ob_space))
-
-    # 行動on_hot, 価値スカラ
-    def act(self, ob):
-        sess = tf.get_default_session()
-        return sess.run([self.sample, self.vf], {self.x: [ob]})
-
-    # 探索なしのact
-    def act_max(self, ob):
-        sess = tf.get_default_session()
-        return sess.run(self.logits, {self.x: [ob]})[0]
-
-    # 価値スカラ
-    def value(self, ob):
-        sess = tf.get_default_session()
-        return sess.run(self.vf, {self.x: [ob]})[0]
-
-
 # 行正規化したランダムな値のテンソルを返すinitializerを返す
 def normalized_columns_initializer(std=1.0):
     def _initializer(shape, dtype=None, partition_info=None):
@@ -74,4 +53,25 @@ def linear(x, size, name, initializer=None, bias_init=0):
 def categorical_sample(logits, d):
     value = tf.squeeze(tf.multinomial(logits - tf.reduce_max(logits, [1], keep_dims=True), 1), [1])
     return tf.one_hot(value, d)
+
+
+# 方策ベースクラス
+class Policy(object):
+    def __init__(self, ob_space, ac_space):
+        self.x = tf.placeholder(tf.float32, [None] + list(ob_space))
+
+    # 行動on_hot, 価値スカラ
+    def act(self, ob):
+        sess = tf.get_default_session()
+        return sess.run([self.sample, self.vf], {self.x: [ob]})
+
+    # 探索なしのact
+    def act_max(self, ob):
+        sess = tf.get_default_session()
+        return sess.run(self.logits, {self.x: [ob]}).argmax(axis=1)
+
+    # 価値スカラ
+    def value(self, ob):
+        sess = tf.get_default_session()
+        return sess.run(self.vf, {self.x: [ob]})[0]
 

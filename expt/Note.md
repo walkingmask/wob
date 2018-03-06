@@ -5,7 +5,7 @@
 ## SR of wob
 実験対象の5つのタスクのSR。
 
-![](./figs/wob_sr.pdf)
+![./figs/wob_sr.pdf](./figs/wob_sr.pdf)
 
 
 ## expt1
@@ -27,7 +27,7 @@ HighlightText,7,2,4
 ResizeTextarea,2,2,1
 ```
 
-![](./figs/expt1.pdf)
+![./figs/expt1.pdf](./figs/expt1.pdf)
 
 
 ### Diagnostics
@@ -66,7 +66,7 @@ HighlightText,7,1,4
 ResizeTextarea,3,1,1
 ```
 
-![](./figs/expt2.pdf)
+![./figs/expt2.pdf](./figs/expt2.pdf)
 
 
 ## expt3
@@ -82,4 +82,55 @@ HighlightText,7,0,16
 ResizeTextarea,3,2,2
 ```
 
-![](./figs/expt3.pdf)
+![./figs/expt3.pdf](./figs/expt3.pdf)
+
+
+### Diagnostics
+#### BC
+- 所要時間: cc:5h, cd:2h50m, gn:3h20m, ht:5h30m, rt:4h
+- validation lossを加えた。training lossと見比べると、かなり早い段階でof?しているような感じ(lossが上がっていく、急激に上がる)
+
+#### A3C
+- 所要時間: 2h/taskくらい
+- GCE落ちる...これならGCE使わないべきだが、原因はなんだ？
+
+#### Play
+- 所要時間: 2h30m前後/task
+
+
+## expt4
+BCでの学習効果を確かめるために、BCなしA3Cのみ、他は同じ条件で実験した。現状、検証可能なタスクがClickCollapsibleだけなので、それだけを使用した。
+
+```
+a3c,ClickCollapsible,0.959386
+a3c,ClickCollapsible,0.972879
+a3c,ClickCollapsible,0.000000
+```
+
+結果は、最後の1つは死んでてダメだったが、上二つを見るとわかる通り、ClickCollapsibleではBCの効果は無さそうだった。より複雑なタスクでは違う結果が見られるかもしれない。
+
+
+## expt5
+bc時にデモデータの画像を正規化(0~255を0~1.0に変換すること)していなかった致命的な実装ミスがあったので、それを修正して再度1から実験した。結果はexpt3より微妙なことに。ただ、A3Cのスコアが下がってBCのスコアが上がった...気がする。BCのvalidation loss見ると、ほとんどのタスクで学習のほぼ初期で右肩上がりになっていたので、やっぱりover fittingしてるのかも。
+
+### SR
+```
+# Task,Random,SL,SL+RL
+ClickCollapsible,30,96,91
+ClickDialog2,28,29,21
+GuessNumber,0,8,2
+HighlightText,7,5,5
+ResizeTextarea,3,2,2
+```
+
+![./figs/expt5.pdf](./figs/expt5.pdf)
+
+### Diagnostics
+#### BC
+- validation lossがほとんどのタスクで学習のほぼ初期で右肩上がり
+
+#### A3C
+- gnのvnc_updatesがいまいち不安定な感じなのはタスクの性質(画面変化が少ないから)なのだろうか
+- ht,rtも同じような感じ、難易度の高いタスクほどvnc_*が悪い傾向があるような
+- fpsが徐々に下がっていくなど
+

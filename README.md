@@ -7,16 +7,16 @@ MiniWoBを対象とし、[openai/universe](https://github.com/openai/universe)�
 
 
 ## 各ディレクトリの説明
-### [agent](./agent/README.md)
+### [agent](./agent)
 [openai/universe-starter-agent](https://github.com/openai/universe-starter-agent)をベースにしたwob用のA3C学習用プログラム、デモデータを用いたBehavioral Cloningを行うためのプログラム、Success Rate(SR)を計測するためのプログラムなど。
 
-### [expt](./expt/README.md)
+### [expt](./expt)
 実験について。概要、手順、実際の実験で作成したデモデータや記録。
 
-### [misc](./misc/README.md)
+### [misc](./misc)
 実験用サーバのプロビジョニング用のメモなど。
 
-### [recorder](./recorder/README.md)
+### [recorder](./recorder)
 デモの録画や、それをPythonオブジェクトに変換するためのプログラムなど。
 
 

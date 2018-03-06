@@ -14,6 +14,7 @@ import random
 import sys
 import signal
 
+import numpy as np
 import go_vncdriver
 import tensorflow as tf
 
@@ -61,7 +62,8 @@ class DataSet(object):
         X, Y = [], []
         for data in dataset:
             obs, act = data
-            X.append(obs * (1.0 / 255.0))
+            obs = obs.astype(np.float32) * (1.0 / 255.0)
+            X.append(obs)
             Y.append(act[0])
         self.dataset = list(zip(X, Y))
 

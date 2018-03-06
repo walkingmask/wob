@@ -8,6 +8,7 @@ from .common import *
 class FFPolicy0(Policy):
     def __init__(self, ob_space, ac_space):
         super().__init__(ob_space, ac_space)
+        x = self.x
 
         x = tf.nn.elu(conv2d(x, 16, "l1", [5, 5], [2, 2]))
         x = tf.nn.elu(conv2d(x, 24, "l2", [5, 5], [2, 2]))

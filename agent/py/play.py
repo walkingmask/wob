@@ -81,7 +81,8 @@ class Player(object):
             if self.step > self.max_steps:
                 break
 
-            action = self.network.act_max(state).argmax()
+            action = self.network.act(state)[0].argmax()
+#            action = self.network.act_max(state)[0]
             print(action)
 
             state, reward, terminal, info = env.step(action)
