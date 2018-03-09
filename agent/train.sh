@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
 function usage() {
-    echo "usage: $0 CKPT_DIR LOG_DIR [-w NUM_WORKERS] [-m MODEL] [-s global_steps] [-n n_steps] [-g gamma] [-l lambda] [-h]" 1>&2
+    echo "usage: $0 CKPT_DIR LOG_DIR [-a NUM_TRAINS]\n" \
+         "          [-w NUM_WORKERS] [-m MODEL]\n" \
+         "          [-s GLOBAL_STEPS] [-n N_STEPS]\n" \
+         "          [-g GAMMA] [-l LAMBDA] [-h]" 1>&2
     exit 1
 }
 
@@ -18,6 +21,7 @@ CKPT_DIR=$1
 LOG_DIR=$1
 [ "${LOG_DIR:0:1}" = "-" ] && usage || shift 
 
+NUM_TRAINS=3
 NUM_WORKERS=12
 MODEL="FFPolicy"
 GLOBAL_STEPS=1000000
@@ -26,9 +30,10 @@ GAMMA=0.9
 LAMBDA=0.95
 
 # args
-while getopts w:m:s:n:g:l:h OPT
+while getopts a:w:m:s:n:g:l:h OPT
 do
   case $OPT in
+    "a" ) NUM_TRAINS=$OPTARG ;;
     "w" ) NUM_WORKERS=$OPTARG ;;
     "m" ) MODEL=$OPTARG ;;
     "s" ) GLOBAL_STEPS=$OPTARG ;;
@@ -44,7 +49,7 @@ cd ./py
 mkdir -p $LOG_DIR
 
 for task in `ls $CKPT_DIR`; do
-    for i in `seq 3`; do
+    for i in `seq $NUM_TRAINS`; do
         logdir="$LOG_DIR/$task/$i"
         mkdir -p $logdir
         ckpt="`ls $CKPT_DIR/$task | grep index`"
