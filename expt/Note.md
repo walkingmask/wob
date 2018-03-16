@@ -134,3 +134,46 @@ ResizeTextarea,3,2,2
 - ht,rtも同じような感じ、難易度の高いタスクほどvnc_*が悪い傾向があるような
 - fpsが徐々に下がっていくなど
 
+
+## expt6
+bc時のエポック数を落とした実験。6epochsのckptでa3cした。SRを見るに、あまり変わらないか、悪くなっている。
+
+### SR
+```
+# Task,SL,SL+RL
+ClickCollapsible,96,86
+ClickDialog2,30,27
+GuessNumber,5,0
+HighlightText,7,0
+ResizeTextarea,1,1
+```
+
+### Diagnostics
+特にいつもと変わりばえしないように感じる。
+
+### メモ
+この実験だけに言えることではないが、A3Cを使った実験では、ワーカー毎にtensorflowのログが作られるのでtensorboard用のsummaryが膨大になる。実験全てにおいてこれを保存してはおけないし、tensorboardを起動するのも遅く、解析に時間がかかる。表示も遅くてストレス。そしてtbをpdfに保存したりはできないという...。なんとかならんかな。
+
+
+## expt7
+ワーカー数を6に減らして、マシンの負荷を軽減して実験した。ckptにはexpt6のものを使用。3つのタスクに絞って、a3cも1回だけ学習。結果に大きな違いは見られなかった。Diagnostics見ると、vnc_updatesが地べたに張り付いたりはしていないので、その辺は良いのかなと。ただし、それでもhtのスコアが伸びていないあたり、問題はそこではない可能性が高い。
+
+### SR
+```
+# Task,SL,SL+RL
+ClickCollapsible,96,96
+ClickDialog2,30,18
+HighlightText,7,4
+```
+
+
+## expt8
+poolingをGAPから普通のaverage pooling(2x2)に変更したもの。BCから再実行。bcのepochsは10。初めてhtのbcのスコアが改善された。先行研究に近い。しかし、a3cは全て0。原因は明確で、Diagnosticsを見るとvnc_updatesが0に張り付いているケースが多く、処理が重いことがわかる。GAPに比べてパラメータ数がかなり増えるのでそれのせいかなと。それにしても0になるものだろうか。
+
+### SR
+```
+# Task,SL,SL+RL
+ClickCollapsible,94,0
+ClickDialog2,27,0
+HighlightText,31,0
+```
